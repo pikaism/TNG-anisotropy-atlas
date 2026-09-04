@@ -1,0 +1,9 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+secrets.txt
+*.hdf5
+report/*.aux
+report/*.log
+report/*.pdf
