@@ -4,7 +4,7 @@ Velocity anisotropy of satellite galaxy populations in IllustrisTNG:
 a reproducible measurement pipeline and population atlas across halo
 mass, environment, and galaxy-population bins.
 
-**Status:** in progress. See `notebooks/01_toy_validation.ipynb` for
+**Status:** Complete.  See `notebooks/01_toy_validation.ipynb` for
 pipeline validation on synthetic halos with known anisotropy.
 
 ## Goal
