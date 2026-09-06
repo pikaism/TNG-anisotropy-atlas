@@ -1,6 +1,7 @@
 """TNG data I/O: authenticated download and catalog loading."""
 
 import os
+import re
 import time
 from pathlib import Path
 
@@ -108,7 +109,15 @@ def download_groupcat(snapshot, base_path, api_key=None):
 
     downloaded = []
     for url in file_urls:
-        fname = url.split("/")[-1]
+        api_fname = url.split("/")[-1]
+        # API names files like "groupcat-99.N.hdf5"; illustris_python expects
+        # "fof_subhalo_tab_099.N.hdf5" — normalize here, once, permanently.
+        match = re.search(r"\.(\d+)\.hdf5$", api_fname)
+        chunk_num = match.group(1) if match else None
+        if chunk_num is not None:
+            fname = f"fof_subhalo_tab_{snapshot:03d}.{chunk_num}.hdf5"
+        else:
+            fname = api_fname
         out_file = out_dir / fname
 
         if out_file.exists() and _is_valid_hdf5(out_file):
