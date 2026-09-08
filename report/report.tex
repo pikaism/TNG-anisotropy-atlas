@@ -1,0 +1,205 @@
+
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{booktabs}
+
+\title{TNG Anisotropy Atlas: A Reproducible Pipeline for Satellite \\
+Velocity Anisotropy in IllustrisTNG-100}
+\author{[Your Name]}
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\section{Goal}
+
+Satellite galaxy velocity anisotropy,
+$\beta(r) = 1 - \sigma_t^2(r) / (2\sigma_r^2(r))$,
+characterizes the shape of satellite orbits within dark matter halos:
+$\beta < 0$ indicates tangentially-biased orbits, $\beta > 0$ radially-biased
+orbits, and $\beta = 0$ isotropy. This is well-studied in the literature
+(e.g.\ Wojtak, Hansen \& Hjorth 2013, hereafter WHH13) and in standard
+N-body simulations. The goal of this project is not to discover new
+physics, but to build and validate a reproducible measurement pipeline
+for $\beta(r)$ in IllustrisTNG-100, and to use it to produce a
+population-level atlas across halo mass, environment, and galaxy
+star-formation status. This pipeline and the resulting atlas are
+intended as a validated baseline in standard cosmology, against which
+future work testing alternative dynamical frameworks could be
+compared -- no such comparison is attempted here, since IllustrisTNG
+assumes standard gravity throughout.
+
+\section{Data}
+
+We use IllustrisTNG-100 (Nelson et al.\ 2019), snapshot 99 ($z=0$),
+accessed via the public TNG API and the \texttt{illustris\_python}
+package. Central host halos were selected in five mass bins
+(Table~\ref{tab:massbins}), based on $\mathrm{Group\_M\_Crit200}$,
+requiring at least 6 subhalos per host. Satellites were identified via
+\texttt{SubhaloGrNr}, restricted to within $R_{200}$ of the host, with
+positions and velocities computed relative to the host center under
+periodic boundary conditions.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lccc}
+\toprule
+Bin & $\log_{10}(M_{200}/10^{10}\,M_\odot/h)$ & $M_{200}$ range & $N_\mathrm{halos}$ \\
+\midrule
+0 & [1.0, 1.3) & $10^{11}$--$2\times10^{11}\,M_\odot/h$   & 3878 \\
+1 & [1.3, 1.7) & $2\times10^{11}$--$5\times10^{11}$        & 3205 \\
+2 & [1.7, 2.2) & $5\times10^{11}$--$1.6\times10^{12}$       & 1754 \\
+3 & [2.2, 3.0) & $1.6\times10^{12}$--$10^{13}$              & 645  \\
+4 & [3.0, 4.5) & $>10^{13}$ (cluster-scale)                 & 127  \\
+\bottomrule
+\end{tabular}
+\caption{Host halo mass bins and sample sizes.}
+\label{tab:massbins}
+\end{table}
+
+As a resolution check, we computed the halo mass function
+$dn/d\log_{10}M$ for the full snapshot (Figure~\ref{fig:massfunc}).
+The function turns over near $\log_{10}(M_{200}) \approx -1.6$,
+consistent with the $\sim$50-particle resolution limit computed from
+the simulation's dark matter particle mass
+($m_\mathrm{DM} = 5.06\times10^6\,M_\odot/h$, sourced from the TNG
+API). Our analysis sample begins at $\log_{10}(M_{200}) = 1.0$, roughly
+2.6 dex above this limit, so halo-finding incompleteness does not
+affect the mass bins used here.
+
+\section{Methods}
+
+\subsection{Kinematic decomposition}
+
+For each satellite, position and velocity relative to the host center
+are decomposed into radial and tangential components. Tangential
+dispersion is computed as the second moment $\langle v_t^2 \rangle$,
+not the variance of $v_t$: because tangential speed follows a
+Rayleigh distribution, using the variance introduces a bias of
+$+0.785(1-\beta)$, which we identified and corrected during toy-model
+validation. Radial dispersion uses the variance (with $\mathrm{ddof}=1$)
+around the bin mean, correcting for bulk flows. Errors are propagated
+via the delta method.
+
+\subsection{Validation on synthetic halos}
+
+Before use on real data, the pipeline was validated on synthetic
+halos with known input $\beta$ (Figure~\ref{fig:toy}). Across 30
+random realizations each for $\beta_\mathrm{input} \in \{-0.5, 0, 0.5\}$,
+recovered values matched inputs to within $\sim$1$\sigma$. A
+radius-dependent test case, $\beta(r) = 0.5(r/r_\mathrm{max})^2$, was
+also correctly recovered in shape.
+
+\subsection{Stacking and bootstrap errors}
+
+Satellites are stacked across all host halos within a mass bin, with
+radius scaled by each host's $R_{200}$. Radial bins use equal-count
+(quantile-based) edges. Uncertainties are estimated via bootstrap
+resampling of \emph{host halos} (200 iterations), not individual
+satellites, since satellites within a single halo are not independent
+draws and satellite-level bootstrapping would understate the true
+uncertainty.
+
+\subsection{Environment and population splits}
+
+Environment is measured as the number of neighboring massive halos
+($\log_{10}(M_{200}) \geq 1.0$) within a 5~Mpc/h periodic search radius.
+Star-forming/quenched classification uses a specific star formation
+rate threshold of $10^{-11}\,\mathrm{yr}^{-1}$ (Franx et al.\ 2008).
+
+\section{Validation}
+
+Figure~\ref{fig:massfunc} shows the halo mass function resolution
+check described above. Figure~\ref{fig:quenchradial} shows quenched
+fraction as a function of clustercentric radius in the two
+galaxy-resolved bins (Bin 3, $N=302$ halos; Bin 4/clusters, $N=127$
+halos), declining monotonically from 65\% to 31\% (Bin 3) and 94\% to
+70\% (Bin 4) from center to outskirts. This trend is well-established
+in the galaxy evolution literature (ram-pressure stripping and tidal
+quenching are most efficient near cluster cores); we do not claim it
+as novel, but present it as an independent, observable-space
+validation that the pipeline reproduces known physics.
+
+\section{Results}
+
+\subsection{Mass trend}
+
+The core result (Figure~\ref{fig:betamass}) is a monotonic trend from
+tangentially-biased orbits at group scale to radially-biased orbits at
+cluster scale: Bin 0, $\beta \approx -0.32$ to $-0.03$; Bin 1,
+$\approx -0.18$ to $-0.05$; Bin 2, $\approx -0.18$ to $-0.03$; Bin 3,
+$\approx -0.06$ to $0.02$ (roughly isotropic); Bin 4 (clusters),
+$\approx +0.07$ to $+0.24$ (radially biased). This is consistent with
+low-mass halos being dynamically relaxed with tidally-circularized
+orbits, and cluster halos actively assembling via radial filamentary
+infall -- matching the qualitative expectation from WHH13 and standard
+N-body halo anisotropy profiles ($\beta \approx 0$ at the center,
+rising to 0.4--0.6 in the outskirts).
+
+\subsection{Environment}
+
+Per-halo Spearman correlations ($N=2580$ individual halos with valid
+$\beta$) give $\rho(\beta, \mathrm{mass}) = 0.139$
+($p = 1.55\times10^{-12}$) and, controlling for mass via partial
+Spearman correlation, $\rho(\beta, \mathrm{environment}\,|\,\mathrm{mass})
+= -0.099$ ($p = 4.19\times10^{-7}$): environment has a statistically
+significant effect on $\beta$ independent of mass.
+
+A median environment split within each mass bin shows a sign reversal:
+at group/intermediate mass, denser environments correspond to
+\emph{more} tangential bias ($\Delta\beta$ from $-0.073$ to $-0.084$
+across Bins 0--3), while at cluster mass, denser environments
+correspond to \emph{more} radial bias ($\Delta\beta = +0.048$ in Bin
+4). We interpret this as increased tidal stirring at group scale
+versus enhanced filamentary infall feeding actively-growing clusters,
+but note Bin 4's environment split has only 62--65 halos per half; we
+present this as a suggestive, physically-motivated finding warranting
+further investigation with larger-volume simulations, not a confirmed
+result.
+
+\subsection{Resolution limit and galaxy-only cross-check}
+
+The vast majority of subhalos in our catalog are dark-matter-only,
+with zero resolved stellar mass (95.2\%--99.4\% depending on mass
+bin) -- a known TNG100 resolution limit for dwarf galaxies, not a
+pipeline bug. Applying a resolved-galaxy stellar mass floor of
+$10^{8.5}\,M_\odot/h$, only Bins 2--4 retain usable samples (20, 302,
+and 127 halos respectively; Bins 0--1 have zero halos with $\geq 3$
+resolved satellites). Galaxy-only satellites are systematically more
+radially biased than the full subhalo population (e.g.\ Bin 3:
+$-0.019 \to +0.144$; Bin 4: $+0.162 \to +0.278$), consistent with
+stronger dynamical friction acting on more massive, luminous
+satellites.
+
+\section{Limitations}
+
+\begin{itemize}
+\item The Bin 4 (cluster) sample is small ($N=127$ halos), and the
+  environment-split sign reversal in this bin should be treated as
+  suggestive rather than confirmed.
+\item Bin-level Spearman correlations (across only 5 mass bins) are
+  statistically weak; the per-halo correlation ($N=2580$) is the
+  defensible statistic and is what we report as significant.
+\item TNG100's mass resolution prevents resolving dwarf galaxies in
+  group-mass hosts, restricting the galaxy-only cross-check to Bins
+  2--4.
+\item All results assume standard gravity, as encoded in the
+  IllustrisTNG simulation physics.
+\end{itemize}
+
+\section{Baseline for alternative dynamics}
+
+This pipeline and atlas are presented purely as a validated baseline
+within standard $\Lambda$CDM cosmology and standard gravity, as
+implemented in IllustrisTNG. No claims are made, implied, or intended
+regarding modified gravity, modified inertia, or any alternative
+dynamical framework. Future work seeking to test such frameworks
+against satellite kinematics would require either a simulation run
+under the alternative physics, or an independent observational
+comparison; this atlas is not designed for and should not be
+interpreted as evidence for or against any such framework.
+
+\end{document}
