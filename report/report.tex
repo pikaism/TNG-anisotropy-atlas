@@ -70,6 +70,15 @@ API). Our analysis sample begins at $\log_{10}(M_{200}) = 1.0$, roughly
 2.6 dex above this limit, so halo-finding incompleteness does not
 affect the mass bins used here.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=0.75\textwidth]{../figures/halo_mass_function.png}
+\caption{Halo mass function for TNG100-1 snapshot 99. The dashed line
+marks the $\sim$50-particle resolution limit; the shaded region shows
+the mass range used in this analysis, which lies well above it.}
+\label{fig:massfunc}
+\end{figure}
+
 \section{Methods}
 
 \subsection{Kinematic decomposition}
@@ -87,11 +96,12 @@ via the delta method.
 \subsection{Validation on synthetic halos}
 
 Before use on real data, the pipeline was validated on synthetic
-halos with known input $\beta$ (Figure~\ref{fig:toy}). Across 30
-random realizations each for $\beta_\mathrm{input} \in \{-0.5, 0, 0.5\}$,
-recovered values matched inputs to within $\sim$1$\sigma$. A
-radius-dependent test case, $\beta(r) = 0.5(r/r_\mathrm{max})^2$, was
-also correctly recovered in shape.
+halos with known input $\beta$. Across 30 random realizations each for
+$\beta_\mathrm{input} \in \{-0.5, 0, 0.5\}$, recovered values matched
+inputs to within $\sim$1$\sigma$. A radius-dependent test case,
+$\beta(r) = 0.5(r/r_\mathrm{max})^2$, was also correctly recovered in
+shape. (See \texttt{notebooks/01\_toy\_validation.ipynb} for the full
+validation figures.)
 
 \subsection{Stacking and bootstrap errors}
 
@@ -123,6 +133,15 @@ quenching are most efficient near cluster cores); we do not claim it
 as novel, but present it as an independent, observable-space
 validation that the pipeline reproduces known physics.
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{../figures/quenched_fraction_radial.png}
+\caption{Quenched fraction vs.\ clustercentric radius for the
+galaxy-resolved Bin 3 and Bin 4 samples, with bootstrap errors
+resampling host halos.}
+\label{fig:quenchradial}
+\end{figure}
+
 \section{Results}
 
 \subsection{Mass trend}
@@ -139,26 +158,46 @@ infall -- matching the qualitative expectation from WHH13 and standard
 N-body halo anisotropy profiles ($\beta \approx 0$ at the center,
 rising to 0.4--0.6 in the outskirts).
 
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{../figures/beta_vs_mass.png}
+\caption{Stacked $\beta(r)$ profiles across the five host-halo mass
+bins, with bootstrap errors resampling host halos.}
+\label{fig:betamass}
+\end{figure}
+
 \subsection{Environment}
 
 Per-halo Spearman correlations ($N=2580$ individual halos with valid
 $\beta$) give $\rho(\beta, \mathrm{mass}) = 0.139$
-($p = 1.55\times10^{-12}$) and, controlling for mass via partial
-Spearman correlation, $\rho(\beta, \mathrm{environment}\,|\,\mathrm{mass})
-= -0.099$ ($p = 4.19\times10^{-7}$): environment has a statistically
-significant effect on $\beta$ independent of mass.
+($p = 1.55\times10^{-12}$). Controlling for mass via partial Spearman
+correlation:
+\begin{equation}
+\rho(\beta, \mathrm{environment} \mid \mathrm{mass}) = -0.099,
+\qquad p = 4.19\times10^{-7},
+\end{equation}
+indicating environment has a statistically significant effect on
+$\beta$ independent of mass.
 
-A median environment split within each mass bin shows a sign reversal:
-at group/intermediate mass, denser environments correspond to
-\emph{more} tangential bias ($\Delta\beta$ from $-0.073$ to $-0.084$
-across Bins 0--3), while at cluster mass, denser environments
-correspond to \emph{more} radial bias ($\Delta\beta = +0.048$ in Bin
-4). We interpret this as increased tidal stirring at group scale
-versus enhanced filamentary infall feeding actively-growing clusters,
-but note Bin 4's environment split has only 62--65 halos per half; we
-present this as a suggestive, physically-motivated finding warranting
-further investigation with larger-volume simulations, not a confirmed
-result.
+A median environment split within each mass bin shows a sign reversal
+(Figure~\ref{fig:envsplit}): at group/intermediate mass, denser
+environments correspond to \emph{more} tangential bias ($\Delta\beta$
+from $-0.073$ to $-0.084$ across Bins 0--3), while at cluster mass,
+denser environments correspond to \emph{more} radial bias
+($\Delta\beta = +0.048$ in Bin 4). We interpret this as increased
+tidal stirring at group scale versus enhanced filamentary infall
+feeding actively-growing clusters, but note Bin 4's environment split
+has only 62--65 halos per half; we present this as a suggestive,
+physically-motivated finding warranting further investigation with
+larger-volume simulations, not a confirmed result.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{../figures/beta_environment_split.png}
+\caption{Median environment split of $\beta$ within each mass bin.
+Note the sign reversal in the cluster-mass bin.}
+\label{fig:envsplit}
+\end{figure}
 
 \subsection{Resolution limit and galaxy-only cross-check}
 
@@ -169,10 +208,35 @@ pipeline bug. Applying a resolved-galaxy stellar mass floor of
 $10^{8.5}\,M_\odot/h$, only Bins 2--4 retain usable samples (20, 302,
 and 127 halos respectively; Bins 0--1 have zero halos with $\geq 3$
 resolved satellites). Galaxy-only satellites are systematically more
-radially biased than the full subhalo population (e.g.\ Bin 3:
-$-0.019 \to +0.144$; Bin 4: $+0.162 \to +0.278$), consistent with
-stronger dynamical friction acting on more massive, luminous
-satellites.
+radially biased than the full subhalo population
+(Figure~\ref{fig:galfull}; e.g.\ Bin 3: $-0.019 \to +0.144$; Bin 4:
+$+0.162 \to +0.278$), consistent with stronger dynamical friction
+acting on more massive, luminous satellites.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{../figures/beta_galaxy_vs_full.png}
+\caption{Comparison of $\beta$ from the full subhalo population versus
+the resolved-galaxy-only subsample, Bins 2--4.}
+\label{fig:galfull}
+\end{figure}
+
+Restricting to the same resolved-galaxy bins, satellites also show a
+clear split by star-formation status (Figure~\ref{fig:sfq}): quenched
+satellites are consistently more radially biased than star-forming
+ones, consistent with satellites on radial, eccentric orbits plunging
+closer to the host center, where ram-pressure stripping and tidal
+quenching are strongest. Bin 2 has zero quenched-hosting halos, a
+physically sensible null result given group-mass halos generally lack
+the hot gas atmosphere needed for ram-pressure quenching.
+
+\begin{figure}[h!]
+\centering
+\includegraphics[width=\textwidth]{../figures/beta_sf_quenched.png}
+\caption{$\beta$ split by star-forming vs.\ quenched satellite status,
+Bins 3--4.}
+\label{fig:sfq}
+\end{figure}
 
 \section{Limitations}
 
