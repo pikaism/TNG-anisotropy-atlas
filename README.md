@@ -17,6 +17,12 @@ IllustrisTNG-100 at z = 0, validated against literature benchmarks
 baseline for testing alternative dynamical frameworks in standard
 cosmology.
 
+## Preliminary
+
+Before applying the estimator to IllustrisTNG data, I validated the complete 
+velocity-anisotropy pipeline on synthetic halo populations with prescribed anisotropy. 
+The recovered profiles agreed with the input values within ensemble uncertainties.
+
 ## What this project contains
 
 - **Toy-model validation**: synthetic halos with known input β,
