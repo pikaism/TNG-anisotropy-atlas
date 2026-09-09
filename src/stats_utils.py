@@ -1,7 +1,8 @@
 """Stacked, per-halo, and correlation statistics for satellite anisotropy.
 
-NOTE: filename intentionally keeps the "statisitics" typo (see repo
-README/handoff notes) — do not silently rename it.
+NOTE: named stats_utils.py (not statistics.py) deliberately, to avoid
+shadowing Python's built-in `statistics` standard library module,
+which would happen if a file with that exact name sat on sys.path.
 """
 
 import numpy as np

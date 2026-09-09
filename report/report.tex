@@ -6,13 +6,31 @@
 \usepackage{hyperref}
 \usepackage{booktabs}
 
-\title{TNG Anisotropy Atlas: A Reproducible Pipeline for Satellite \\
-Velocity Anisotropy in IllustrisTNG-100}
+\title{A Reproducible Pipeline for Measuring Satellite Velocity \\
+Anisotropy in IllustrisTNG-100}
 \author{Your Actual Name Here}
 \date{\today}
 
 \begin{document}
 \maketitle
+
+\begin{abstract}
+We present a reproducible pipeline for measuring satellite galaxy
+velocity anisotropy $\beta(r)$ in IllustrisTNG-100 (snapshot 99,
+$z=0$), validated on synthetic halos with known input $\beta$ before
+application to real data. Using bootstrap errors that resample host
+halos rather than individual satellites, we measure $\beta(r)$ across
+five host-halo mass bins, finding a monotonic trend from
+tangentially-biased orbits at group scale to radially-biased orbits at
+cluster scale, consistent with observational and N-body expectations.
+We further examine environment, star-forming/quenched status, and a
+resolved-galaxy stellar-mass cut, and perform two resolution checks
+(halo mass function, stellar-mass floor) confirming our sample is
+unaffected by simulation resolution limits. This is an exploratory,
+validated pipeline and pilot analysis, not a claim of novel physics;
+it is intended as a baseline for future population-level and
+cross-simulation comparisons.
+\end{abstract}
 
 \section{Goal}
 
