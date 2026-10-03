@@ -83,3 +83,33 @@ computed in TNG300.
 - The low-mass bins are a selected sample (hosts with >= 5 resolved
   satellites above the floor) and are not representative of all halos in
   those mass ranges. This limitation will be stated in the report.
+
+
+---
+# Addendum 3 (2026-10-03): mass matching and definition of delta_beta
+
+Written BEFORE any beta or delta_beta was computed in TNG300.
+
+Motivation (diagnostic of host mass only, no beta): in the TNG300 cluster
+bin the high-environment half is more massive than the low half (mean
+log10 M200 = 3.470 vs 3.287; satellite-weighted 3.816 vs 3.440; Spearman
+between environment count and log M200 = +0.31). Bins 1-3 show gaps of
+0.02-0.04 dex. Because beta increases with host mass, an unmatched delta_beta
+can partly reflect mass.
+
+Definitions:
+- delta_beta = beta_global(high) - beta_global(low), where beta_global is
+  computed from all satellites inside R200, pooled over hosts in the half
+  (second moment for tangential, variance with ddof=1 for radial).
+  Radial beta profiles are shown for illustration, not tested.
+- PRIMARY statistic: mass-matched delta_beta. Within each 0.1-dex slice of
+  log10 M200, equal numbers of high- and low-environment hosts are kept by
+  randomly dropping surplus hosts of the larger half (seed 42). Applied to
+  all testable bins. The unmatched delta_beta is reported as a sensitivity
+  check; if the two disagree, the matched result decides.
+- Testability (>= 50 hosts per half) is evaluated after matching.
+- Uncertainty: 1000 bootstrap resamples of hosts (with replacement, whole
+  bin), repeating the matching in each resample.
+- Permutation null: 10,000 shuffles of environment labels within each mass
+  slice, re-matching and recomputing delta_beta each time.
+- Robustness (only if primary passes): slice width 0.05 dex.
