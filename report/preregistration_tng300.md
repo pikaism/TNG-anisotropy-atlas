@@ -140,3 +140,29 @@ Changes / additions:
   original catalog (no floor, ties to low half) as a code check; then
   re-run with the Addendum 1-3 rules (floor, matching, balanced split) and
   both statistics.
+
+
+---
+# Addendum 5 (2026-10-03): post-result diagnostics (EXPLORATORY, not confirmatory)
+
+Written AFTER the TNG300 pre-registered analysis was run and committed
+(commit f5f08da). Outcome of the pre-registered primary test is unchanged:
+bin 4 matched delta_beta_global = -0.063 +/- 0.013, i.e. the TNG100
+positive sign was NOT reproduced. The analyses below are diagnostics to
+understand the discrepancy and are labelled exploratory.
+
+D1. Reproduce the original TNG100 delta_beta values (no floor, ties to the
+    low half) from the original TNG100 catalog as a code check.
+D2. TNG100 mass-matched re-analysis with both delta_beta statistics,
+    bootstrap errors (1000) and permutation null, on (a) the original
+    sample (no floor) and (b) the floor-matched sample (SubhaloMass >= 0.2,
+    >= 5 satellites, balanced median split, 0.1-dex matching).
+D3. Consistency of TNG100 and TNG300 floor-matched delta_beta_global per
+    bin: z_diff = (d100 - d300) / sqrt(sigma100^2 + sigma300^2).
+D4. TNG300 octant split (8 sub-volumes of TNG100 size) to estimate how
+    often a TNG100-sized volume yields a delta_beta as large as the
+    original +0.048. Exact definition to be fixed in a further addendum
+    BEFORE it is run.
+
+TNG100 bins with < 50 matched hosts per half are untestable under
+Addendum 2; their estimates are shown as diagnostics only.
