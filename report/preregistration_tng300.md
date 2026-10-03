@@ -39,3 +39,21 @@ cosmic variance; optional TNG300-Dark.
 ## Framing
 Standard-gravity baseline, 3D velocities. Any positive result is
 "suggestive, worth further investigation", not a discovery.
+
+
+---
+# Addendum 1 (2026-10-03): satellite mass floor and sample rules
+
+Written after the TNG300-1 group catalog was downloaded, and before any
+TNG300 satellite kinematics or beta values were computed.
+
+- Satellite floor: SubhaloMass >= 0.2 (code units of 1e10 Msun/h, i.e.
+  2e9 Msun/h). This is ~50 DM-particle masses in TNG300-1 (m_DM = 0.00398)
+  and ~400 in TNG100-1 (m_DM = 5.056e-4).
+- The SAME floor is applied to TNG100 and TNG300. TNG100 is re-analysed
+  with this floor so the two simulations are compared like-for-like.
+- Host halos are selected as before (mass bins above, GroupNsubs >= 6),
+  but a host is kept only if it has >= 5 satellites inside R200 AFTER the
+  floor is applied.
+- All other definitions and the decision rule in the original
+  pre-registration are unchanged.
