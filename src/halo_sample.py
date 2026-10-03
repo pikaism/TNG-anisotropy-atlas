@@ -128,3 +128,68 @@ def build_satellite_catalog(sub_cat, host_idx, host_props, box_size,
     }
 
     return rel_pos[within], rel_vel[within], props
+
+
+def build_satellite_catalog_fast(sub_cat, host_props, box_size, n_subs,
+                                 min_subhalo_mass=0.0, min_stellar_mass=0.0,
+                                 min_satellites=1):
+    """Build the satellite catalog for one host by slicing its subhalos.
+
+    Subhalos of a FOF group are stored contiguously, starting at
+    GroupFirstSub (the central) for GroupNsubs entries. Reading only that
+    slice is far faster than scanning the whole catalog per host.
+
+    Parameters
+    ----------
+    sub_cat : dict
+        Needs SubhaloPos, SubhaloVel, SubhaloMass, SubhaloMassType,
+        SubhaloSFR, SubhaloFlag.
+    host_props : dict
+        Single-host properties: pos, vel, r200, first_sub.
+    box_size : float
+        Periodic box size (ckpc/h).
+    n_subs : int
+        GroupNsubs of this host (central + satellites).
+    min_subhalo_mass : float
+        Minimum total SubhaloMass, code units (1e10 Msun/h).
+    min_stellar_mass : float
+        Minimum stellar mass, code units.
+    min_satellites : int
+        Return None if fewer satellites remain inside R200.
+
+    Returns
+    -------
+    rel_pos, rel_vel : ndarray, shape (N_sat, 3)
+    props : dict
+        r, stellar_mass, sfr, flag, sub_mass.
+    """
+    first = int(host_props["first_sub"])
+    sl = slice(first + 1, first + int(n_subs))  # skip the central
+
+    sub_mass = sub_cat["SubhaloMass"][sl]
+    stellar = sub_cat["SubhaloMassType"][sl, 4]
+    keep = sub_cat["SubhaloFlag"][sl] > 0
+    keep &= sub_mass >= min_subhalo_mass
+    keep &= stellar >= min_stellar_mass
+    if not np.any(keep):
+        return None, None, None
+
+    sat_pos = sub_cat["SubhaloPos"][sl][keep]
+    sat_vel = sub_cat["SubhaloVel"][sl][keep]
+
+    rel_pos = periodic_distance(sat_pos, host_props["pos"], box_size)
+    r = np.sqrt(np.sum(rel_pos ** 2, axis=1))
+    rel_vel = sat_vel - host_props["vel"]
+
+    within = r < host_props["r200"]
+    if within.sum() < min_satellites:
+        return None, None, None
+
+    props = {
+        "r": r[within],
+        "stellar_mass": stellar[keep][within],
+        "sfr": sub_cat["SubhaloSFR"][sl][keep][within],
+        "flag": sub_cat["SubhaloFlag"][sl][keep][within],
+        "sub_mass": sub_mass[keep][within],
+    }
+    return rel_pos[within], rel_vel[within], props
