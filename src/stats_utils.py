@@ -254,3 +254,35 @@ def filter_to_galaxies(satellite_data, stellar_mass_floor):
             })
         filtered.append({"halos": new_halos})
     return filtered
+
+
+def median_split_by_environment(env_counts, seed=42):
+    """Split hosts into low/high environment halves at the median.
+
+    Hosts with a count above the median are 'high', below are 'low'.
+    Hosts exactly at the median are assigned by a seeded random draw so
+    the two halves are as equal in size as possible.
+
+    Parameters
+    ----------
+    env_counts : array-like of int
+        Neighbour count per host.
+    seed : int
+        RNG seed for tie-breaking.
+
+    Returns
+    -------
+    high : ndarray of bool
+        True for the high-environment half.
+    """
+    import numpy as _np
+    env_counts = _np.asarray(env_counts)
+    n = len(env_counts)
+    med = _np.median(env_counts)
+    high = env_counts > med
+    ties = _np.where(env_counts == med)[0]
+    n_needed = max(0, min(n // 2 - int(high.sum()), len(ties)))
+    if n_needed > 0:
+        rng = _np.random.default_rng(seed)
+        high[rng.choice(ties, size=n_needed, replace=False)] = True
+    return high
