@@ -73,7 +73,7 @@ def _download_file(url, out_path, api_key, chunk_size=8192,
                 raise
 
 
-def download_groupcat(snapshot, base_path, api_key=None):
+def download_groupcat(snapshot, base_path, api_key=None, sim="TNG100-1"):
     """Download all groupcat chunks for a snapshot using the TNG API file listing.
 
     Parameters
@@ -84,6 +84,8 @@ def download_groupcat(snapshot, base_path, api_key=None):
         Local root where ``groups_099/`` will be created.
     api_key : str, optional
         TNG API key. If None, reads from Colab Secrets or env.
+    sim : str
+        Simulation name, e.g. "TNG100-1" (default) or "TNG300-1".
 
     Returns
     -------
@@ -99,7 +101,7 @@ def download_groupcat(snapshot, base_path, api_key=None):
         )
 
     headers = {"api-key": api_key}
-    listing_url = f"https://www.tng-project.org/api/TNG100-1/files/groupcat-{snapshot}/"
+    listing_url = f"https://www.tng-project.org/api/{sim}/files/groupcat-{snapshot}/"
     r = requests.get(listing_url, headers=headers, timeout=30)
     r.raise_for_status()
     file_urls = r.json()["files"]
