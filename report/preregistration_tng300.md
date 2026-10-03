@@ -57,3 +57,29 @@ TNG300 satellite kinematics or beta values were computed.
   floor is applied.
 - All other definitions and the decision rule in the original
   pre-registration are unchanged.
+
+
+---
+# Addendum 2 (2026-10-03): testability rule and median-split definition
+
+Written after the TNG300 satellite catalog was built (floor 0.2, >= 5
+satellites; counts per bin known) and BEFORE any beta or delta_beta was
+computed in TNG300.
+
+- Observed host counts after the floor: bin 0 = 17, bin 1 = 237,
+  bin 2 = 3404, bin 3 = 10382, bin 4 = 2507.
+- A mass bin is TESTABLE only if each environment half contains >= 50
+  hosts (comparable to the ~62-65 hosts per half in the TNG100 cluster bin
+  that motivated this test). Untestable bins are reported as untestable,
+  not as passes or failures. Bin 0 is expected to be untestable.
+- Holm correction for the secondary prediction (delta_beta < 0) is applied
+  over the testable bins among bins 0-3 only.
+- Median split: hosts with environment count above the median are 'high',
+  below are 'low'; hosts exactly at the median are assigned by a seeded
+  random draw (seed = 42) so the halves are as equal as possible. The same
+  rule is used for the TNG100 re-analysis.
+- Hosts above the top mass edge (15 hosts with log10 M200 >= 4.5) are
+  excluded from the primary test and reported separately.
+- The low-mass bins are a selected sample (hosts with >= 5 resolved
+  satellites above the floor) and are not representative of all halos in
+  those mass ranges. This limitation will be stated in the report.
