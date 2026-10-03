@@ -113,3 +113,30 @@ Definitions:
 - Permutation null: 10,000 shuffles of environment labels within each mass
   slice, re-matching and recomputing delta_beta each time.
 - Robustness (only if primary passes): slice width 0.05 dex.
+
+
+---
+# Addendum 4 (2026-10-03): legacy TNG100 definition of delta_beta
+
+Written BEFORE any beta or delta_beta was computed in TNG300.
+
+Finding: inspection of the TNG100 notebook (environment_split_within_mass_bins)
+shows the exploratory TNG100 delta_beta was the difference of the unweighted
+means over the 8 equal-count radial bins of the stacked beta(r) profile
+(np.nanmean of per-radial-bin beta, n_min = 20), with the median split
+assigning hosts exactly at the median to the LOW half. No uncertainty on
+delta_beta was computed.
+
+Changes / additions:
+- The PRIMARY test is unchanged: mass-matched delta_beta_global (Addendum 3).
+- For every test (each testable bin; matched and unmatched) a second
+  statistic, delta_beta_profile = mean over the 8 radial bins of stacked
+  beta(r) in the high half minus the same in the low half, is also reported
+  with bootstrap errors. This is the TNG100 legacy definition and allows
+  direct comparison with the original numbers.
+- If delta_beta_global and delta_beta_profile have opposite signs in bin 4,
+  the result is reported as definition-dependent.
+- TNG100 re-analysis: first reproduce the original TNG100 numbers from the
+  original catalog (no floor, ties to low half) as a code check; then
+  re-run with the Addendum 1-3 rules (floor, matching, balanced split) and
+  both statistics.
